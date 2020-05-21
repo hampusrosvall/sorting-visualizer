@@ -1,24 +1,24 @@
 .array-bar {
-    display: inline-block; 
-    background-color: paleturquoise;
-    margin: 0 2px;
-    width: 20px; 
+  display: inline-block;
+  background-color: paleturquoise;
+  margin: 0 2px;
+  width: 2px;
 }
 
 .array-container {
-    position: absolute;
-    bottom: 40%;  
-    left: 50px; 
+  position: absolute;
+  bottom: 40%;
+  left: 80px;
 }
 
 .button {
-    font-family: Arial;
-    background: steelblue;
-    width: 150px; 
-    height: 50px; 
-    margin: 0 2px; 
+  font-family: Arial;
+  background: steelblue;
+  width: 150px;
+  height: 50px;
+  margin: 0 2px;
 }
 
 .background {
-    background-color: rgb(34, 27, 80);
+  background-color: rgb(34, 27, 80);
 }
