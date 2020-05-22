@@ -4,11 +4,11 @@ import heapSort from "../sortingAlgorithms/heapSort.js";
 import quickSort from "../sortingAlgorithms/quickSort.js";
 
 const LOWERBOUND = 5;
-const UPPERBOUND = 300;
+const UPPERBOUND = 500;
 const SIZE = 230;
 const STANDARD_COLOR = "paleturquoise";
 const COMPARING_COLOR = "lightcoral";
-const SPEED = 1;
+const SPEED = 2;
 const ALTER_SPEED = 0.5;
 
 export default class SortingVisualizer extends React.Component {
@@ -74,6 +74,38 @@ export default class SortingVisualizer extends React.Component {
     }
   }
 
+  async quickSortAsync() {
+    const [comparisons, sortedArray] = quickSort(this.state.array.slice());
+    testQuickSort(sortedArray, this.state.array.slice());
+
+    const states = ["HIGHLIGHT", "SWAP_HEIGHTS", "DEHIGHLIGHT"];
+
+    for (let i = 0; i < comparisons.length; i++) {
+      const comparison = comparisons[i];
+      const history = comparison.history;
+
+      for (let j = 0; j < history.length; j++) {
+        const arrayBars = document.getElementsByClassName("array-bar");
+        const currentHistory = history[j];
+        const left = currentHistory.left;
+        const right = currentHistory.right;
+        const didSwap = currentHistory.swap;
+
+        for (let k = 0; k < states.length; k++) {
+          const currentState = states[k];
+          let color;
+          if (currentState === "HIGHLIGHT" || currentState === "DEHIGHLIGHT") {
+            color =
+              currentState === "HIGHLIGHT" ? COMPARING_COLOR : STANDARD_COLOR;
+            await changeColorAsync(left, right, arrayBars, color);
+          } else if (currentState === "SWAP_HEIGHTS" && didSwap) {
+            await changeHeightsAsync(left, right, arrayBars);
+          }
+        }
+      }
+    }
+  }
+
   heapSort() {
     const states = ["HIGHLIGHT", "SWAP_HEIGHTS", "DEHIGHLIGHT"];
     const information = heapSort(this.state.array.slice());
@@ -122,7 +154,7 @@ export default class SortingVisualizer extends React.Component {
         <button className="button" onClick={() => this.heapSort()}>
           Heap Sort
         </button>
-        <button className="button" onClick={() => this.quickSort()}>
+        <button className="button" onClick={() => this.quickSortAsync()}>
           Quick Sort
         </button>
       </div>
@@ -152,6 +184,26 @@ function generateRandomNumber(lowerBound, upperBound) {
 function testQuickSort(sortedArray, unSortedArray) {
   const buildInSort = unSortedArray.slice().sort((a, b) => a - b);
   console.log(JSON.stringify(sortedArray) === JSON.stringify(buildInSort));
+}
+
+async function changeColorAsync(firstIdx, secondIdx, bars, color) {
+  const firstBarStyle = bars[firstIdx].style;
+  const secondBarStyle = bars[secondIdx].style;
+  firstBarStyle.backgroundColor = color;
+  secondBarStyle.backgroundColor = color;
+}
+
+async function changeHeightsAsync(firstIdx, secondIdx, bars) {
+  await sleep(SPEED);
+  const firstBarStyle = bars[firstIdx].style;
+  const secondBarStyle = bars[secondIdx].style;
+  const tmpHeight = firstBarStyle.height;
+  firstBarStyle.height = secondBarStyle.height;
+  secondBarStyle.height = tmpHeight;
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // function testSortingAlgorithm(sortingAlgo){
