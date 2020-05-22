@@ -4,12 +4,11 @@ import heapSort from "../sortingAlgorithms/heapSort.js";
 import quickSort from "../sortingAlgorithms/quickSort.js";
 
 const LOWERBOUND = 5;
-const UPPERBOUND = 500;
+const UPPERBOUND = 750;
 const SIZE = 230;
-const STANDARD_COLOR = "paleturquoise";
-const COMPARING_COLOR = "lightcoral";
-const SPEED = 2;
-const ALTER_SPEED = 0.5;
+const STANDARD_COLOR = "white";
+const COMPARING_COLOR = "red";
+const SPEED = 15;
 
 export default class SortingVisualizer extends React.Component {
   constructor(props) {
@@ -21,6 +20,7 @@ export default class SortingVisualizer extends React.Component {
 
   componentDidMount() {
     this.resetArray();
+    document.body.style.backgroundColor = "black";
   }
 
   resetArray() {
@@ -33,44 +33,6 @@ export default class SortingVisualizer extends React.Component {
     const arrayBars = document.getElementsByClassName("array-bar");
     for (let bar of arrayBars) {
       bar.style.backgroundColor = STANDARD_COLOR;
-    }
-  }
-
-  quickSort() {
-    const [comparisons, sortedArray] = quickSort(this.state.array.slice());
-    testQuickSort(sortedArray, this.state.array.slice());
-    const states = ["HIGHLIGHT", "SWAP_HEIGHTS", "DEHIGHLIGHT"];
-    let counts = 1;
-    for (let i = 0; i < comparisons.length; i++) {
-      const comparison = comparisons[i];
-      const history = comparison.history;
-
-      for (let j = 0; j < history.length; j++) {
-        const arrayBars = document.getElementsByClassName("array-bar");
-        const currentHistory = history[j];
-        const left = currentHistory.left;
-        const right = currentHistory.right;
-        const didSwap = currentHistory.swap;
-
-        for (let k = 0; k < states.length; k++) {
-          const currentState = states[k];
-          let color;
-          if (currentState === "HIGHLIGHT" || currentState === "DEHIGHLIGHT") {
-            color =
-              currentState === "HIGHLIGHT" ? COMPARING_COLOR : STANDARD_COLOR;
-            setTimeout(() => {
-              setComparingColors(left, right, arrayBars, color);
-            }, counts * ALTER_SPEED * SPEED);
-          } else if (currentState === "SWAP_HEIGHTS" && didSwap) {
-            setTimeout(() => {
-              updateBarHeights(left, right, arrayBars);
-            }, counts * ALTER_SPEED * SPEED);
-          }
-          counts++;
-        }
-        counts++;
-      }
-      counts++;
     }
   }
 
@@ -97,19 +59,20 @@ export default class SortingVisualizer extends React.Component {
           if (currentState === "HIGHLIGHT" || currentState === "DEHIGHLIGHT") {
             color =
               currentState === "HIGHLIGHT" ? COMPARING_COLOR : STANDARD_COLOR;
-            await changeColorAsync(left, right, arrayBars, color);
+            updateColors(left, right, arrayBars, color);
           } else if (currentState === "SWAP_HEIGHTS" && didSwap) {
-            await changeHeightsAsync(left, right, arrayBars);
+            await sleep(SPEED);
+            updateHeights(left, right, arrayBars);
           }
         }
       }
     }
   }
 
-  heapSort() {
+  async heapSort() {
     const states = ["HIGHLIGHT", "SWAP_HEIGHTS", "DEHIGHLIGHT"];
     const information = heapSort(this.state.array.slice());
-    let counts = 1;
+
     for (let i = 0; i < information.length; i++) {
       const elem = information[i];
       const [firstIdx, secondIdx] = elem.comparing;
@@ -121,17 +84,12 @@ export default class SortingVisualizer extends React.Component {
           let color;
           color =
             currentState === "HIGHLIGHT" ? COMPARING_COLOR : STANDARD_COLOR;
-          setTimeout(() => {
-            setComparingColors(firstIdx, secondIdx, arrayBars, color);
-          }, counts * ALTER_SPEED * SPEED);
+          updateColors(firstIdx, secondIdx, arrayBars, color);
         } else if (currentState === "SWAP_HEIGHTS" && elem.swap) {
-          setTimeout(() => {
-            updateBarHeights(firstIdx, secondIdx, arrayBars);
-          }, counts * ALTER_SPEED * SPEED);
+          await sleep(SPEED);
+          updateHeights(firstIdx, secondIdx, arrayBars);
         }
-        counts++;
       }
-      counts++;
     }
   }
 
@@ -162,21 +120,6 @@ export default class SortingVisualizer extends React.Component {
   }
 }
 
-function setComparingColors(firstIdx, secondIdx, bars, color) {
-  const firstBarStyle = bars[firstIdx].style;
-  const secondBarStyle = bars[secondIdx].style;
-  firstBarStyle.backgroundColor = color;
-  secondBarStyle.backgroundColor = color;
-}
-
-function updateBarHeights(firstIdx, secondIdx, bars) {
-  const firstBarStyle = bars[firstIdx].style;
-  const secondBarStyle = bars[secondIdx].style;
-  const tmpHeight = firstBarStyle.height;
-  firstBarStyle.height = secondBarStyle.height;
-  secondBarStyle.height = tmpHeight;
-}
-
 function generateRandomNumber(lowerBound, upperBound) {
   return Math.floor(Math.random() * (upperBound - lowerBound + 1) + lowerBound);
 }
@@ -186,15 +129,14 @@ function testQuickSort(sortedArray, unSortedArray) {
   console.log(JSON.stringify(sortedArray) === JSON.stringify(buildInSort));
 }
 
-async function changeColorAsync(firstIdx, secondIdx, bars, color) {
+function updateColors(firstIdx, secondIdx, bars, color) {
   const firstBarStyle = bars[firstIdx].style;
   const secondBarStyle = bars[secondIdx].style;
   firstBarStyle.backgroundColor = color;
   secondBarStyle.backgroundColor = color;
 }
 
-async function changeHeightsAsync(firstIdx, secondIdx, bars) {
-  await sleep(SPEED);
+function updateHeights(firstIdx, secondIdx, bars) {
   const firstBarStyle = bars[firstIdx].style;
   const secondBarStyle = bars[secondIdx].style;
   const tmpHeight = firstBarStyle.height;
