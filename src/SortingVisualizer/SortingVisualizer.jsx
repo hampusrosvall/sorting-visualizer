@@ -2,9 +2,10 @@ import React from "react";
 import "./SortingVisualizer.css";
 import heapSort from "../sortingAlgorithms/heapSort.js";
 import quickSort from "../sortingAlgorithms/quickSort.js";
+import mergeSort from "../sortingAlgorithms/mergeSort.js";
 
 const LOWERBOUND = 5;
-const UPPERBOUND = 750;
+const UPPERBOUND = 600;
 const SIZE = 230;
 const STANDARD_COLOR = "white";
 const COMPARING_COLOR = "red";
@@ -36,9 +37,9 @@ export default class SortingVisualizer extends React.Component {
     }
   }
 
-  async quickSortAsync() {
+  async quickSort() {
     const [comparisons, sortedArray] = quickSort(this.state.array.slice());
-    testQuickSort(sortedArray, this.state.array.slice());
+    testSortingAlgorithm(sortedArray, this.state.array.slice());
 
     const states = ["HIGHLIGHT", "SWAP_HEIGHTS", "DEHIGHLIGHT"];
 
@@ -93,6 +94,33 @@ export default class SortingVisualizer extends React.Component {
     }
   }
 
+  async mergeSort() {
+    const animations = mergeSort(this.state.array.slice());
+    const states = ["HIGHLIGHT", "SWAP_HEIGHTS", "DEHIGHLIGHT"];
+
+    for (let animation of animations) {
+      const arrayBars = document.getElementsByClassName("array-bar");
+      const leftComparison = animation.leftComparison;
+      const rightComparison = animation.rightComparison;
+      const insertAt = animation.insertAt;
+      const insertHeight = animation.insertHeight;
+      for (let k = 0; k < states.length; k++) {
+        const currentState = states[k];
+        if (currentState === "HIGHLIGHT" || currentState === "DEHIGHLIGHT") {
+          let color;
+          color =
+            currentState === "HIGHLIGHT" ? COMPARING_COLOR : STANDARD_COLOR;
+          updateColors(leftComparison, rightComparison, arrayBars, color);
+        } else if (currentState === "SWAP_HEIGHTS") {
+          await sleep(SPEED);
+          let toUpdateStyle = arrayBars[insertAt].style;
+          console.log(toUpdateStyle.height);
+          toUpdateStyle.height = `${insertHeight}px`;
+        }
+      }
+    }
+  }
+
   render() {
     const { array } = this.state;
     return (
@@ -112,8 +140,11 @@ export default class SortingVisualizer extends React.Component {
         <button className="button" onClick={() => this.heapSort()}>
           Heap Sort
         </button>
-        <button className="button" onClick={() => this.quickSortAsync()}>
+        <button className="button" onClick={() => this.quickSort()}>
           Quick Sort
+        </button>
+        <button className="button" onClick={() => this.mergeSort()}>
+          Merge Sort
         </button>
       </div>
     );
@@ -124,7 +155,7 @@ function generateRandomNumber(lowerBound, upperBound) {
   return Math.floor(Math.random() * (upperBound - lowerBound + 1) + lowerBound);
 }
 
-function testQuickSort(sortedArray, unSortedArray) {
+function testSortingAlgorithm(sortedArray, unSortedArray) {
   const buildInSort = unSortedArray.slice().sort((a, b) => a - b);
   console.log(JSON.stringify(sortedArray) === JSON.stringify(buildInSort));
 }

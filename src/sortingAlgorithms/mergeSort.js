@@ -1,24 +1,79 @@
 export const mergeSort = (array) => {
-    if (array.length === 1) return array; 
-    const middleIdx = Math.floor(array.length / 2); 
-    const left = mergeSort(array.slice(0, middleIdx)); 
-    const right = mergeSort(array.slice(middleIdx)); 
-    let i = 0, j = 0; 
-    const sortedArray = []; 
+  if (array.length <= 1) return array;
 
-    while (i < left.length && j < right.length){
-        if (left[i] <= right[j]) {
-            sortedArray.push(left[i++]);
-        } else {
-            sortedArray.push(right[j++]);
-        }    
-    } 
+  let animations = [];
+  let helperArray = array.slice();
+  mergeSortHelper(array, 0, array.length - 1, helperArray, animations);
 
-    while (i < left.length) sortedArray.push(left[i++]); 
-    while (j < right.length) sortedArray.push(right[j++]); 
+  return animations;
+};
 
-    return sortedArray;
-}; 
+function mergeSortHelper(mainArray, startIdx, endIdx, helperArray, animations) {
+  if (startIdx === endIdx) return;
+
+  let middleIdx = Math.floor((startIdx + endIdx) / 2);
+  mergeSortHelper(helperArray, startIdx, middleIdx, mainArray, animations);
+  mergeSortHelper(helperArray, middleIdx + 1, endIdx, mainArray, animations);
+  doMerge(mainArray, startIdx, middleIdx, endIdx, helperArray, animations);
+}
+
+function doMerge(
+  mainArray,
+  startIdx,
+  middleIdx,
+  endIdx,
+  helperArray,
+  animations
+) {
+  let i = startIdx;
+  let k = startIdx;
+  let j = middleIdx + 1;
+
+  let informationObject;
+
+  while (i <= middleIdx && j <= endIdx) {
+    if (helperArray[i] <= helperArray[j]) {
+      informationObject = {
+        leftComparison: i,
+        rightComparison: j,
+        insertAt: k,
+        insertHeight: helperArray[i],
+      };
+      mainArray[k++] = helperArray[i++];
+    } else {
+      informationObject = {
+        leftComparison: i,
+        rightComparison: j,
+        insertAt: k,
+        insertHeight: helperArray[j],
+      };
+      mainArray[k++] = helperArray[j++];
+    }
+    animations.push(informationObject);
+  }
+
+  fillRemaining(i, middleIdx, k, mainArray, helperArray, animations);
+  fillRemaining(j, endIdx, k, mainArray, helperArray, animations);
+}
+
+function fillRemaining(
+  startIdx,
+  endIdx,
+  mainArrayIdx,
+  mainArray,
+  helperArray,
+  animations
+) {
+  while (startIdx <= endIdx) {
+    let informationObject = {
+      leftComparison: startIdx,
+      rightComparison: startIdx,
+      insertAt: mainArrayIdx,
+      insertHeight: helperArray[startIdx],
+    };
+    mainArray[mainArrayIdx++] = helperArray[startIdx++];
+    animations.push(informationObject);
+  }
+}
 
 export default mergeSort;
-
