@@ -6,10 +6,10 @@ import mergeSort from "../sortingAlgorithms/mergeSort.js";
 
 const LOWERBOUND = 5;
 const UPPERBOUND = 600;
-const SIZE = 230;
-const STANDARD_COLOR = "white";
+const SIZE = 60;
+const STANDARD_COLOR = "paleturquoise";
 const COMPARING_COLOR = "red";
-const SPEED = 15;
+const SPEED = 30;
 
 export default class SortingVisualizer extends React.Component {
   constructor(props) {
@@ -37,11 +37,20 @@ export default class SortingVisualizer extends React.Component {
     }
   }
 
+  disableButtons() {
+    let buttons = document.querySelectorAll("button");
+    Array.prototype.map.call(buttons, (button) => (button.disabled = true));
+  }
+
+  enableButtons() {
+    let buttons = document.querySelectorAll("button");
+    Array.prototype.map.call(buttons, (button) => (button.disabled = false));
+  }
+
   async quickSort() {
+    this.disableButtons();
     const [comparisons, sortedArray] = quickSort(this.state.array.slice());
     testSortingAlgorithm(sortedArray, this.state.array.slice());
-
-    const states = ["HIGHLIGHT", "SWAP_HEIGHTS", "DEHIGHLIGHT"];
 
     for (let i = 0; i < comparisons.length; i++) {
       const comparison = comparisons[i];
@@ -54,49 +63,52 @@ export default class SortingVisualizer extends React.Component {
         const right = currentHistory.right;
         const didSwap = currentHistory.swap;
 
-        for (let k = 0; k < states.length; k++) {
-          const currentState = states[k];
-          let color;
-          if (currentState === "HIGHLIGHT" || currentState === "DEHIGHLIGHT") {
-            color =
-              currentState === "HIGHLIGHT" ? COMPARING_COLOR : STANDARD_COLOR;
-            updateColors(left, right, arrayBars, color);
-          } else if (currentState === "SWAP_HEIGHTS" && didSwap) {
-            await sleep(SPEED);
-            updateHeights(left, right, arrayBars);
-          }
+        updateColors(left, right, arrayBars, COMPARING_COLOR);
+        if (didSwap) {
+          let leftStyle = arrayBars[left].style;
+          const leftHeight = leftStyle.height;
+          let rightStyle = arrayBars[right].style;
+          leftStyle.height = rightStyle.height;
+          await sleep(SPEED * 1.5);
+          rightStyle.height = leftHeight;
+          await sleep(SPEED * 1.5);
         }
+        updateColors(left, right, arrayBars, STANDARD_COLOR);
       }
     }
+    this.enableButtons();
   }
 
   async heapSort() {
-    const states = ["HIGHLIGHT", "SWAP_HEIGHTS", "DEHIGHLIGHT"];
-    const information = heapSort(this.state.array.slice());
+    this.disableButtons();
+    const [information, sortedArray] = heapSort(this.state.array.slice());
+    testSortingAlgorithm(sortedArray, this.state.array.slice());
 
-    for (let i = 0; i < information.length; i++) {
-      const elem = information[i];
-      const [firstIdx, secondIdx] = elem.comparing;
+    for (let info of information) {
+      const left = info.left;
+      const right = info.right;
+      const didSwap = info.swap;
+
       const arrayBars = document.getElementsByClassName("array-bar");
 
-      for (let k = 0; k < states.length; k++) {
-        const currentState = states[k];
-        if (currentState === "HIGHLIGHT" || currentState === "DEHIGHLIGHT") {
-          let color;
-          color =
-            currentState === "HIGHLIGHT" ? COMPARING_COLOR : STANDARD_COLOR;
-          updateColors(firstIdx, secondIdx, arrayBars, color);
-        } else if (currentState === "SWAP_HEIGHTS" && elem.swap) {
-          await sleep(SPEED);
-          updateHeights(firstIdx, secondIdx, arrayBars);
-        }
+      updateColors(left, right, arrayBars, COMPARING_COLOR);
+      if (didSwap) {
+        let leftStyle = arrayBars[left].style;
+        const leftHeight = leftStyle.height;
+        let rightStyle = arrayBars[right].style;
+        leftStyle.height = rightStyle.height;
+        await sleep(SPEED);
+        rightStyle.height = leftHeight;
+        await sleep(SPEED);
       }
+      updateColors(left, right, arrayBars, STANDARD_COLOR);
     }
+    this.enableButtons();
   }
 
   async mergeSort() {
+    this.disableButtons();
     const animations = mergeSort(this.state.array.slice());
-    const states = ["HIGHLIGHT", "SWAP_HEIGHTS", "DEHIGHLIGHT"];
 
     for (let animation of animations) {
       const arrayBars = document.getElementsByClassName("array-bar");
@@ -104,21 +116,15 @@ export default class SortingVisualizer extends React.Component {
       const rightComparison = animation.rightComparison;
       const insertAt = animation.insertAt;
       const insertHeight = animation.insertHeight;
-      for (let k = 0; k < states.length; k++) {
-        const currentState = states[k];
-        if (currentState === "HIGHLIGHT" || currentState === "DEHIGHLIGHT") {
-          let color;
-          color =
-            currentState === "HIGHLIGHT" ? COMPARING_COLOR : STANDARD_COLOR;
-          updateColors(leftComparison, rightComparison, arrayBars, color);
-        } else if (currentState === "SWAP_HEIGHTS") {
-          await sleep(SPEED);
-          let toUpdateStyle = arrayBars[insertAt].style;
-          console.log(toUpdateStyle.height);
-          toUpdateStyle.height = `${insertHeight}px`;
-        }
-      }
+
+      updateColors(leftComparison, rightComparison, arrayBars, COMPARING_COLOR);
+      let insertAtStyle = arrayBars[insertAt].style;
+
+      await sleep(SPEED);
+      insertAtStyle.height = `${insertHeight}px`;
+      updateColors(leftComparison, rightComparison, arrayBars, STANDARD_COLOR);
     }
+    this.enableButtons();
   }
 
   render() {
@@ -167,28 +173,6 @@ function updateColors(firstIdx, secondIdx, bars, color) {
   secondBarStyle.backgroundColor = color;
 }
 
-function updateHeights(firstIdx, secondIdx, bars) {
-  const firstBarStyle = bars[firstIdx].style;
-  const secondBarStyle = bars[secondIdx].style;
-  const tmpHeight = firstBarStyle.height;
-  firstBarStyle.height = secondBarStyle.height;
-  secondBarStyle.height = tmpHeight;
-}
-
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
-// function testSortingAlgorithm(sortingAlgo){
-//     for (let i = 0; i < 100; i++){
-//         const size = generateRandomNumber(1, 1000);
-//         let unSortedArray = [];
-//         for (let j = 0; j < size; j++){
-//             unSortedArray.push(generateRandomNumber(1, 1000));
-//         }
-
-//         const sortedArray = sortingAlgo(unSortedArray.slice());
-//         const builtInSort = unSortedArray.slice().sort((a, b) => a - b);
-//         console.log(JSON.stringify(sortedArray) === JSON.stringify(builtInSort));
-//     }
-// }
