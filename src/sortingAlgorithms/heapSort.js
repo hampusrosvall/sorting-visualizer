@@ -3,9 +3,15 @@ export const heapSort = (array) => {
   buildMaxHeap(array, informations);
 
   for (let endIdx = array.length - 1; endIdx > 0; endIdx--) {
-    let info = { left: 0, right: endIdx, swap: true };
-    swap(0, endIdx, array);
+    let info = {
+      left: 0,
+      right: endIdx,
+      swap: true,
+      leftHeight: array[0],
+      rightHeight: array[endIdx],
+    };
     informations.push(info);
+    swap(0, endIdx, array);
     bubbleDown(0, endIdx - 1, array, informations);
   }
 
@@ -34,12 +40,19 @@ function bubbleDown(startIdx, endIdx, heap, informations) {
       largestChild = childOne;
     }
 
-    let info = { left: currentIdx, right: largestChild, swap: false };
+    let info = {
+      left: currentIdx,
+      right: largestChild,
+      swap: false,
+      leftHeight: -1,
+      rightHeight: -1,
+    };
     if (heap[largestChild] > heap[currentIdx]) {
       info.swap = true;
+      info.leftHeight = heap[currentIdx];
+      info.rightHeight = heap[largestChild];
       informations.push(info);
       swap(currentIdx, largestChild, heap);
-
       currentIdx = largestChild;
       childOne = 2 * currentIdx + 1;
     } else {

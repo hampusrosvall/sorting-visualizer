@@ -6,10 +6,10 @@ import mergeSort from "../sortingAlgorithms/mergeSort.js";
 
 const LOWERBOUND = 5;
 const UPPERBOUND = 600;
-const SIZE = 60;
+const SIZE = 280;
 const STANDARD_COLOR = "paleturquoise";
 const COMPARING_COLOR = "red";
-const SPEED = 30;
+const SPEED = 10;
 
 export default class SortingVisualizer extends React.Component {
   constructor(props) {
@@ -52,29 +52,23 @@ export default class SortingVisualizer extends React.Component {
     const [comparisons, sortedArray] = quickSort(this.state.array.slice());
     testSortingAlgorithm(sortedArray, this.state.array.slice());
 
-    for (let i = 0; i < comparisons.length; i++) {
-      const comparison = comparisons[i];
-      const history = comparison.history;
+    for (let comparison of comparisons) {
+      const arrayBars = document.getElementsByClassName("array-bar");
+      const left = comparison.left;
+      const right = comparison.right;
+      const didSwap = comparison.swap;
 
-      for (let j = 0; j < history.length; j++) {
-        const arrayBars = document.getElementsByClassName("array-bar");
-        const currentHistory = history[j];
-        const left = currentHistory.left;
-        const right = currentHistory.right;
-        const didSwap = currentHistory.swap;
-
-        updateColors(left, right, arrayBars, COMPARING_COLOR);
-        if (didSwap) {
-          let leftStyle = arrayBars[left].style;
-          const leftHeight = leftStyle.height;
-          let rightStyle = arrayBars[right].style;
-          leftStyle.height = rightStyle.height;
-          await sleep(SPEED * 1.5);
-          rightStyle.height = leftHeight;
-          await sleep(SPEED * 1.5);
-        }
-        updateColors(left, right, arrayBars, STANDARD_COLOR);
+      updateColors(left, right, arrayBars, COMPARING_COLOR);
+      if (didSwap) {
+        await sleep(SPEED * 3);
+        const leftHeight = comparison.leftHeight;
+        const rightHeight = comparison.rightHeight;
+        let leftStyle = arrayBars[left].style;
+        let rightStyle = arrayBars[right].style;
+        leftStyle.height = `${rightHeight}px`;
+        rightStyle.height = `${leftHeight}px`;
       }
+      updateColors(left, right, arrayBars, STANDARD_COLOR);
     }
     this.enableButtons();
   }
@@ -93,13 +87,13 @@ export default class SortingVisualizer extends React.Component {
 
       updateColors(left, right, arrayBars, COMPARING_COLOR);
       if (didSwap) {
+        await sleep(SPEED);
         let leftStyle = arrayBars[left].style;
-        const leftHeight = leftStyle.height;
         let rightStyle = arrayBars[right].style;
-        leftStyle.height = rightStyle.height;
-        await sleep(SPEED);
-        rightStyle.height = leftHeight;
-        await sleep(SPEED);
+        let leftHeight = info.leftHeight;
+        let rightHeight = info.rightHeight;
+        leftStyle.height = `${rightHeight}px`;
+        rightStyle.height = `${leftHeight}px`;
       }
       updateColors(left, right, arrayBars, STANDARD_COLOR);
     }
