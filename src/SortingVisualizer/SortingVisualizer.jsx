@@ -6,7 +6,7 @@ import mergeSort from "../sortingAlgorithms/mergeSort.js";
 
 const LOWERBOUND = 5;
 const UPPERBOUND = 600;
-const SIZE = 280;
+const SIZE = 200;
 const STANDARD_COLOR = "paleturquoise";
 const COMPARING_COLOR = "red";
 const SPEED = 10;
