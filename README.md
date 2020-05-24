@@ -1,6 +1,8 @@
-This is an ongoing development of a sorting algorithm visualizer using JavaScript and React. 
+This is an ongoing development of a sorting algorithm visualizer using JavaScript and React.
 
-Currently, heap sort and quick sort are implemented. Merge sort is to be added soon. 
+Currently, heap sort, quick sort and merge sort are implemented.
+
+The sorting visualizer is currently being built, but the algorithms mentioned above can be tried out here: https://hampusrosvall.github.io/sorting-visualizer/. Before trying out a new algorithm please press the `Generate new array` button.
 
 ## Available Scripts
 
