@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/hampusrosvall/sorting-visualizer/static/css/main.c0bed85d.chunk.css",
+    "main.js": "/hampusrosvall/sorting-visualizer/static/js/main.9d5feabe.chunk.js",
+    "main.js.map": "/hampusrosvall/sorting-visualizer/static/js/main.9d5feabe.chunk.js.map",
+    "runtime-main.js": "/hampusrosvall/sorting-visualizer/static/js/runtime-main.e2b1e663.js",
+    "runtime-main.js.map": "/hampusrosvall/sorting-visualizer/static/js/runtime-main.e2b1e663.js.map",
+    "static/js/2.3590dbd2.chunk.js": "/hampusrosvall/sorting-visualizer/static/js/2.3590dbd2.chunk.js",
+    "static/js/2.3590dbd2.chunk.js.map": "/hampusrosvall/sorting-visualizer/static/js/2.3590dbd2.chunk.js.map",
+    "index.html": "/hampusrosvall/sorting-visualizer/index.html",
+    "precache-manifest.639a56c6179329b1ba9438787b1792de.js": "/hampusrosvall/sorting-visualizer/precache-manifest.639a56c6179329b1ba9438787b1792de.js",
+    "service-worker.js": "/hampusrosvall/sorting-visualizer/service-worker.js",
+    "static/css/main.c0bed85d.chunk.css.map": "/hampusrosvall/sorting-visualizer/static/css/main.c0bed85d.chunk.css.map",
+    "static/js/2.3590dbd2.chunk.js.LICENSE.txt": "/hampusrosvall/sorting-visualizer/static/js/2.3590dbd2.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.e2b1e663.js",
+    "static/js/2.3590dbd2.chunk.js",
+    "static/css/main.c0bed85d.chunk.css",
+    "static/js/main.9d5feabe.chunk.js"
+  ]
+}
