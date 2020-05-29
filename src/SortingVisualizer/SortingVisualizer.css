@@ -1,8 +1,10 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap");
+
 .array-bar {
   display: inline-block;
   background-color: paleturquoise;
-  margin: 0 2px;
-  width: 1px;
+  margin: 0 4px;
+  width: 2px;
 }
 
 .array-container {
@@ -12,13 +14,17 @@
 }
 
 .button {
-  font-family: Arial;
+  font-family: "Lato";
+  font-size: medium;
   background: steelblue;
-  width: 150px;
-  height: 50px;
-  margin: 0 2px;
+  width: 200px;
+  height: 80px;
+  margin: 0 20px;
+  transition-duration: 0.4s;
+  border-radius: 12px;
+  top: 10%;
 }
 
 .background {
-  background-color: rgb(34, 27, 80);
+  background-color: whitesmoke;
 }
