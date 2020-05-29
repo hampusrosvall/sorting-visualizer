@@ -5,9 +5,9 @@ import quickSort from "../sortingAlgorithms/quickSort.js";
 import mergeSort from "../sortingAlgorithms/mergeSort.js";
 
 const LOWERBOUND = 5;
-const UPPERBOUND = 600;
-const SIZE = 200;
-const STANDARD_COLOR = "paleturquoise";
+const UPPERBOUND = 650;
+const SIZE = 100;
+const STANDARD_COLOR = "turquoise";
 const COMPARING_COLOR = "red";
 const SPEED = 10;
 
@@ -21,7 +21,7 @@ export default class SortingVisualizer extends React.Component {
 
   componentDidMount() {
     this.resetArray();
-    document.body.style.backgroundColor = "black";
+    document.body.style.backgroundColor = "whitesmoke";
   }
 
   resetArray() {
